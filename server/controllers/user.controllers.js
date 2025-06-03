@@ -28,7 +28,7 @@ export const register = async (req, res) => {
             email,
             password:hashedPassword 
         })
-        return res.status(400).json({
+        return res.status(201).json({
             success:"true",
             message: "User registered successfully"
         })
@@ -43,6 +43,7 @@ export const register = async (req, res) => {
 
 export const  login=async (req,res)=>{
     try {
+        console.log("Login endpoint hit", req.body);
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).json({
