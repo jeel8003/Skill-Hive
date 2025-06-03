@@ -7,7 +7,7 @@ export const generateToken = (res, user, message) => {
         expiresIn: '1d'
     });
     
-    // Remove the 'this' keyword - it's causing the error
+    
     return res.status(200).cookie("token", token, {
         httpOnly: true,
         sameSite: 'strict',
