@@ -16,9 +16,17 @@ const isAuthenticated=(req,res)=>{
                 message:"Invalid token"
             });
         }
+        req.id=decoded.userId
+        next();
 
 
     } catch (error) {
-        
+        //code please
+        console.error("Authentication error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
     }
 }
+export default isAuthenticated;

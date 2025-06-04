@@ -22,6 +22,20 @@ export const authApi=createApi({
                     
                 }),
             }),
+            loadUser:builder.mutation({
+                query:()=>({
+                    url:"profile",
+                    method:"GET"
+                }),
+                async onQueryStarted(arg,{queryFulfilled,dispatch}) {
+                    try {
+                        const result=await queryFulfilled;
+                        dispatch(userLoggedin({user:result.data.user}))
+                    } catch (error) {
+                        console.error("Error loading user:", error);
+                    }
+                }
+            }),
             loginUser:builder.mutation({
                 query:(userData)=>({
                     
@@ -45,5 +59,6 @@ export const authApi=createApi({
 })
 export const{
     useRegisterUserMutation,
-    useLoginUserMutation
+    useLoginUserMutation,
+    useLoadUserMutation
 }=authApi;
