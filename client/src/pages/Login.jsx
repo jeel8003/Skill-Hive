@@ -17,10 +17,11 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useRegisterUserMutation } from "@/features/api/authApi"
 import { useLoginUserMutation } from "@/features/api/authApi"
+import { toast } from "sonner"
 const Login = () => {
     const [signupInput, setSignupInput] = useState({ name: "", email: "", password: "" });
     const [loginInput, setLoginInput] = useState({ email: "", password: "" });
@@ -55,6 +56,25 @@ const Login = () => {
             await loginUser(inputData);
         }
     };
+
+    useEffect(()=>{
+        if(registerIsSuccess && registerData){
+            toast.success(registerData.message || "Registration successful!");
+        }
+        if(loginIsSuccess && loginData){
+            toast.success(loginData.message || "Login successful!");
+        }
+        if(registerError){
+            toast.error(registerError.data?.message || "Registration failed!");
+        }
+        if(loginError){
+            toast.error(loginError.data?.message || "Login failed!");
+        }
+        // if(registerIsLoading){
+        //     toast.loading("Registering, please wait...");
+        // }
+        
+    },[loginIsLoading,registerIsLoading,loginData,registerData,loginError,registerError])
 
     return (
         <div className="flex items-center w-full justify-center h-screen">
