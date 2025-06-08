@@ -53,6 +53,20 @@ export const authApi=createApi({
                     }
                 }
             }),
+            logoutUser:builder.mutation({
+                query:()=>({
+                    url:"logout",
+                    method:"GET"
+                }),
+                async onQueryStarted(arg,{queryFulfilled,dispatch}) {
+                    try {
+                        const result=await queryFulfilled;
+                        dispatch(userLoggedin({user:null}))
+                    } catch (error) {
+                        console.error("Error logging out user:", error);
+                    }
+                }
+            }),
             
             updateUser:builder.mutation({
                 query:(formdata)=>({
@@ -72,5 +86,6 @@ export const{
     useRegisterUserMutation,
     useLoginUserMutation,
     useLoadUserMutation,
-    useUpdateUserMutation
+    useUpdateUserMutation,
+    useLogoutUserMutation
 }=authApi;
