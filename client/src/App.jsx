@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { Button } from "./components/ui/button";
 import { Login } from "./pages/Login";
-import { Navbar } from "./components/Navbar";
+import Navbar  from "./components/Navbar";
 import { HeroSection } from "./pages/student/HeroSection";
 import { createBrowserRouter } from "react-router-dom";
 import { MainLayout } from "./layout/MainLayout";
@@ -25,7 +25,7 @@ import {
   AuthenticatedUser,
   ProtectedRoute,
 } from "./components/ProtectedRoutes";
-import { PurchaseCourseProtectedRoute } from "./components/PurchaseCourseProtectedRoute";
+import  PurchaseCourseProtectedRoute  from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
 
 const appRouter = createBrowserRouter([

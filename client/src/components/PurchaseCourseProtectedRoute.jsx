@@ -1,10 +1,10 @@
-import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi";
+import { useGetCourseWithStatusQuery } from "@/features/api/purchaseApi";
 
 import { useParams, Navigate } from "react-router-dom";
 
 const PurchaseCourseProtectedRoute = ({children}) => {
     const {courseId} = useParams();
-    const {data, isLoading} = useGetCourseDetailWithStatusQuery(courseId);
+    const {data, isLoading} = useGetCourseWithStatusQuery(courseId);
 
     if(isLoading) return <p>Loading...</p>
 

@@ -21,13 +21,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutUserMutation } from "@/features/api/authApi";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
-export const Navbar = () => {
+const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const [logoutUser, { data, isSuccess, isError, error }] =
     useLogoutUserMutation();
@@ -58,7 +57,7 @@ export const Navbar = () => {
             className="hidden md:block font-extrabold text-2xl md:cursor-pointer"
             onClick={() => navigate("/")}
           >
-            E-Learning
+            Skill-Hive
           </h1>
         </div>
         {/* user icon */}
@@ -69,7 +68,7 @@ export const Navbar = () => {
                 <Avatar>
                   <AvatarImage
                     src={user?.photoUrl || "https://github.com/shadcn.png"}
-                    alt="@shadcn"
+                    alt="@user"
                     className={"cursor-pointer"}
                   />
                   <AvatarFallback>CN</AvatarFallback>
@@ -80,14 +79,14 @@ export const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <Link to="my-learning">My Learning</Link>{" "}
+                    <Link to="my-learning">My Learning</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link to="profile">Edit Profile</Link>{" "}
+                    <Link to="profile">Edit Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={logoutUserHandler}
-                    className={"cursor-pointer gap-33"}
+                    className="cursor-pointer gap-2"
                   >
                     Log out
                     <LogOut className="text-gray-800 dark:text-gray-100" />
@@ -104,7 +103,7 @@ export const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className=" flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 className="cursor-pointer"
@@ -138,7 +137,6 @@ export const Navbar = () => {
 const MobileNavbar = ({ user }) => {
   const [logoutUser, { data, isSuccess, isError, error }] =
     useLogoutUserMutation();
-
   const navigate = useNavigate();
 
   const logoutUserHandler = async () => {
@@ -177,13 +175,13 @@ const MobileNavbar = ({ user }) => {
             </div>
           </SheetClose>
         </SheetHeader>
-        {/* <Separator className="mr-2" /> */}
+
         {user ? (
           <>
             <nav className="flex flex-col space-y-4 p-3">
               <span onClick={() => navigate("my-learning")}>My Learning</span>
               <span onClick={() => navigate("profile")}>Edit Profile</span>
-              <p onClick={logoutUserHandler} className="flex gap-33">
+              <p onClick={logoutUserHandler} className="flex gap-2">
                 Log Out
                 <span className="hidden">
                   <LogOut
@@ -228,3 +226,5 @@ const MobileNavbar = ({ user }) => {
     </Sheet>
   );
 };
+
+export default Navbar;
