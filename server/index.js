@@ -19,16 +19,22 @@ app.use(cookieParser());
 app.use(cors({
     origin: "http://localhost:5173", // Replace with the exact origin of your client
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
+app.use((req, res, next) => {
+    if (req.originalUrl === "/api/v1/purchase/webhook") {
+      express.raw({ type: "application/json" })(req, res, next); // for Stripe
+    } else {
+      express.json()(req, res, next); // normal JSON parsing
+    }
+  });
 // APIs
 const PORT = process.env.PORT;
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
-app.use("api/v1/media",mediaRoute)
-app.use("api/v1/purchase",purchaseRoute)
+app.use("/api/v1/media",mediaRoute)
+app.use("/api/v1/purchase",purchaseRoute)
 app.use("/api/v1/progress", courseProgressRoute);
 
 app.listen(PORT, () => {

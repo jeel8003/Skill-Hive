@@ -1,4 +1,4 @@
-import { Menu, School } from "lucide-react";
+import { LogOut, Menu, School } from "lucide-react";
 import React, { useEffect } from "react";
 import {
   DropdownMenu,
@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import DarkMode from "@/DarkMode";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DarkMode } from "@/DarkMode";
 import {
   Sheet,
   SheetClose,
@@ -27,35 +27,42 @@ import { useLogoutUserMutation } from "@/features/api/authApi";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
-const Navbar = () => {
+export const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
-  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+  const [logoutUser, { data, isSuccess, isError, error }] =
+    useLogoutUserMutation();
+
   const navigate = useNavigate();
-  const logoutHandler = async () => {
+
+  const logoutUserHandler = async () => {
     await logoutUser();
   };
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data?.message || "User log out.");
+      toast.success(data?.message || "Logout Successfully.");
       navigate("/login");
     }
-  }, [isSuccess]);
+    if (isError) {
+      toast.error(error.message || "Fail to logout.");
+    }
+  }, [isSuccess, isError, error]);
 
   return (
-    <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
+    <div className="h-16 dark:bg-[#141414] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 ">
       {/* Desktop */}
       <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-10">
           <School size={"30"} />
-          <Link to="/">
-            <h1 className="hidden md:block font-extrabold text-2xl">
-              Skill-Hive 
-            </h1>
-          </Link>
+          <h1
+            className="hidden md:block font-extrabold text-2xl md:cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            E-Learning
+          </h1>
         </div>
-        {/* User icons and dark mode icon  */}
-        <div className="flex items-center gap-8">
+        {/* user icon */}
+        <div className="flex items-center gap-8 mr-10">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -63,6 +70,7 @@ const Navbar = () => {
                   <AvatarImage
                     src={user?.photoUrl || "https://github.com/shadcn.png"}
                     alt="@shadcn"
+                    className={"cursor-pointer"}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
@@ -72,55 +80,87 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <Link to="my-learning">My learning</Link>
+                    <Link to="my-learning">My Learning</Link>{" "}
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    {" "}
                     <Link to="profile">Edit Profile</Link>{" "}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logoutHandler}>
+                  <DropdownMenuItem
+                    onClick={logoutUserHandler}
+                    className={"cursor-pointer gap-33"}
+                  >
                     Log out
+                    <LogOut className="text-gray-800 dark:text-gray-100" />
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                {user?.role === "instructor" && (
+                {user.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer text-lg justify-center text-blue-900 dark:text-blue-300 font-semibold">
+                      <Link to="admin/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate("/login")}>
+            <div className=" flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
                 Login
               </Button>
-              <Button onClick={() => navigate("/login")}>Signup</Button>
+              <Button
+                className="cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Signup
+              </Button>
             </div>
           )}
           <DarkMode />
         </div>
       </div>
-      {/* Mobile device  */}
+
+      {/* Mobile device */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
-        <h1 className="font-extrabold text-2xl">E-learning</h1>
-        <MobileNavbar user={user}/>
+        <h1 className=" font-extrabold text-2xl" onClick={() => navigate("/")}>
+          E-Learning
+        </h1>
+        <MobileNavbar user={user} />
       </div>
     </div>
   );
 };
 
-export default Navbar;
+const MobileNavbar = ({ user }) => {
+  const [logoutUser, { data, isSuccess, isError, error }] =
+    useLogoutUserMutation();
 
-const MobileNavbar = ({user}) => {
   const navigate = useNavigate();
-  
+
+  const logoutUserHandler = async () => {
+    await logoutUser();
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Logout Successfully.");
+      navigate("/login");
+    }
+    if (isError) {
+      toast.error(error.message || "Fail to logout.");
+    }
+  }, [isSuccess, isError, error]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           size="icon"
-          className="rounded-full hover:bg-gray-200"
+          className="rounded-full bg-gray-200 hover:bg-gray-200 hover:cursor-pointer"
           variant="outline"
         >
           <Menu />
@@ -128,19 +168,59 @@ const MobileNavbar = ({user}) => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle> <Link to="/">E-Learning</Link></SheetTitle>
-          <DarkMode />
+          <SheetClose>
+            <SheetTitle onClick={() => navigate("/")}>E-Learning</SheetTitle>
+          </SheetClose>
+          <SheetClose>
+            <div className="flex mt-5">
+              <DarkMode />
+            </div>
+          </SheetClose>
         </SheetHeader>
-        <Separator className="mr-2" />
-        <nav className="flex flex-col space-y-4">
-          <Link to="/my-learning">My Learning</Link>
-          <Link to="/profile">Edit Profile</Link>
-          <p>Log out</p>
-        </nav>
-        {user?.role === "instructor" && (
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
+        {/* <Separator className="mr-2" /> */}
+        {user ? (
+          <>
+            <nav className="flex flex-col space-y-4 p-3">
+              <span onClick={() => navigate("my-learning")}>My Learning</span>
+              <span onClick={() => navigate("profile")}>Edit Profile</span>
+              <p onClick={logoutUserHandler} className="flex gap-33">
+                Log Out
+                <span className="hidden">
+                  <LogOut
+                    size={"20"}
+                    className="text-gray-800 dark:text-gray-100"
+                  />
+                </span>
+              </p>
+            </nav>
+            {user?.role === "instructor" && (
+              <SheetFooter className="mt-0">
+                <SheetClose asChild>
+                  <Button
+                    onClick={() => navigate("/admin/dashboard")}
+                    type="submit"
+                  >
+                    Dashboard
+                  </Button>
+                </SheetClose>
+              </SheetFooter>
+            )}
+          </>
+        ) : (
+          <SheetFooter className="mt-0">
+            <SheetClose>
+              <div className="flex items-center justify-center gap-3">
+                <Button
+                  onClick={() => navigate("/login")}
+                  type="submit"
+                  variant={"outline"}
+                >
+                  Login
+                </Button>
+                <Button onClick={() => navigate("/login")} type="submit">
+                  Signup
+                </Button>
+              </div>
             </SheetClose>
           </SheetFooter>
         )}

@@ -1,5 +1,4 @@
-
-import RichTextEditor from "@/components/RichTextEditor";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,18 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
   usePublishCourseMutation,
+  useRemoveCourseMutation,
 } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-const CourseTab = () => {
-  
+export const CourseTab = () => {
+  const params = useParams();
+  const courseId = params.courseId;
+
   const [input, setInput] = useState({
     courseTitle: "",
     subTitle: "",
@@ -41,16 +44,31 @@ const CourseTab = () => {
     courseThumbnail: "",
   });
 
-  const params = useParams();
-  const courseId = params.courseId;
-  const { data: courseByIdData, isLoading: courseByIdLoading , refetch} =
-    useGetCourseByIdQuery(courseId);
+  const navigate = useNavigate();
 
-    const [publishCourse, {}] = usePublishCourseMutation();
- 
+  const [
+    removeCourse,
+    {
+      data: removeData,
+      isLoading: removeIsLoading,
+      isSuccess: removeIsSuccess,
+      error: removeError,
+      isError: removeIsError,
+    },
+  ] = useRemoveCourseMutation();
+
+  const [editCourse, { data, error, isError, isLoading, isSuccess }] =
+    useEditCourseMutation();
+
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+
+  const { data: courseByIdData, refetch } = useGetCourseByIdQuery(courseId);
+
+  const course = courseByIdData?.course || {};
+
   useEffect(() => {
-    if (courseByIdData?.course) { 
-        const course = courseByIdData?.course;
+    refetch();
+    if (course) {
       setInput({
         courseTitle: course.courseTitle,
         subTitle: course.subTitle,
@@ -60,14 +78,26 @@ const CourseTab = () => {
         coursePrice: course.coursePrice,
         courseThumbnail: "",
       });
+      setPreviewThumbnail(course.courseThumbnail);
     }
-  }, [courseByIdData]);
+  }, [course]);
 
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const navigate = useNavigate();
+  const [publishCourse, { isLoading: publishIsLoading }] =
+    usePublishCourseMutation();
 
-  const [editCourse, { data, isLoading, isSuccess, error }] =
-    useEditCourseMutation();
+  const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({ courseId, query: action });
+
+      if (response.data) {
+        refetch();
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast(error?.response?.data?.message);
+    }
+  };
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -77,10 +107,11 @@ const CourseTab = () => {
   const selectCategory = (value) => {
     setInput({ ...input, category: value });
   };
+
   const selectCourseLevel = (value) => {
     setInput({ ...input, courseLevel: value });
   };
-  // get file
+
   const selectThumbnail = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -104,112 +135,152 @@ const CourseTab = () => {
     await editCourse({ formData, courseId });
   };
 
-  const publishStatusHandler = async (action) => {
-    try {
-      const response = await publishCourse({courseId, query:action});
-      if(response.data){
-        refetch();
-        toast.success(response.data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to publish or unpublish course");
+  const removeCourseHandler = async () => {
+    if (course?.lectures.length === 0) {
+      await removeCourse(courseId);
+    } else {
+      toast(
+        "Before remove the course,Please remove all lecture inside this course."
+      );
     }
-  }
+  };
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data.message || "Course update.");
+      toast.success(data?.message || "Course Updated.");
     }
-    if (error) {
-      toast.error(error.data.message || "Failed to update course");
-    }
-  }, [isSuccess, error]);
 
-  if(courseByIdLoading) return <h1>Loading...</h1>
- 
+    if (isError) {
+      toast.error(error?.data?.message || "Fail to update");
+    }
+  }, [data, isSuccess, isError]);
+
+  useEffect(() => {
+    if (removeIsSuccess) {
+      toast.success(removeData?.message || "remove course");
+    }
+
+    if (removeIsError) {
+      toast.error(removeError?.response?.data?.message || "Fail to remove!!");
+    }
+  }, [removeIsSuccess, removeIsError, removeError]);
+
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className={"flex flex-row justify-between"}>
         <div>
           <CardTitle>Basic Course Information</CardTitle>
           <CardDescription>
-            Make changes to your courses here. Click save when you're done.
+            Make changes to your courses here. Click save When you're done.
           </CardDescription>
         </div>
-        <div className="space-x-2">
-          <Button disabled={courseByIdData?.course.lectures.length === 0} variant="outline" onClick={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
-            {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
+        <div className="space-x-3 flex">
+          <Button
+            disabled={
+              courseByIdData?.course.lectures.length === 0 || publishIsLoading
+            }
+            className={"cursor-pointer"}
+            variant={"outline"}
+            onClick={() =>
+              publishStatusHandler(
+                courseByIdData?.course.isPublished ? "false" : "true"
+              )
+            }
+          >
+            {publishIsLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Please wait.
+              </>
+            ) : (
+              <>
+                {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
+              </>
+            )}
           </Button>
-          <Button>Remove Course</Button>
+          <Button disabled={removeIsLoading} onClick={removeCourseHandler} className={"cursor-pointer"}>
+            {removeIsLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />Please wait.
+              </>
+            ) : (
+              "Remove Course"
+            )}
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4 mt-5">
-          <div>
-            <Label>Title</Label>
+          <div className="space-y-2">
+            <Label>Title *</Label>
             <Input
               type="text"
               name="courseTitle"
               value={input.courseTitle}
               onChange={changeEventHandler}
-              placeholder="Ex. Fullstack developer"
+              placeholder="Title"
             />
           </div>
-          <div>
-            <Label>Subtitle</Label>
+          <div className="space-y-2">
+            <Label>SubTitle</Label>
             <Input
               type="text"
               name="subTitle"
               value={input.subTitle}
               onChange={changeEventHandler}
-              placeholder="Ex. Become a Fullstack developer from zero to hero in 2 months"
+              placeholder="SubTitle"
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label>Description</Label>
             <RichTextEditor input={input} setInput={setInput} />
           </div>
-          <div className="flex items-center gap-5">
-            <div>
-              <Label>Category</Label>
-              <Select
-                defaultValue={input.category}
-                onValueChange={selectCategory}
-              >
+          <div className="flex items-center gap-5 ">
+            <div className="space-y-2">
+              <Label>Category *</Label>
+              <Select onValueChange={selectCategory}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Category</SelectLabel>
-                    <SelectItem value="Next JS">Next JS</SelectItem>
-                    <SelectItem value="Data Science">Data Science</SelectItem>
-                    <SelectItem value="Frontend Development">
-                      Frontend Development
+                    <SelectItem value="data science">data science</SelectItem>
+                    <SelectItem value="data analyst">data analyst</SelectItem>
+                    <SelectItem value="react js">react js</SelectItem>
+                    <SelectItem value="mern stack development">
+                      mern stack development
                     </SelectItem>
-                    <SelectItem value="Fullstack Development">
-                      Fullstack Development
+                    <SelectItem value="java full stack">
+                      java full stack
                     </SelectItem>
-                    <SelectItem value="MERN Stack Development">
-                      MERN Stack Development
+                    <SelectItem value="frontend development">
+                      frontend development
                     </SelectItem>
-                    <SelectItem value="Javascript">Javascript</SelectItem>
-                    <SelectItem value="Python">Python</SelectItem>
-                    <SelectItem value="Docker">Docker</SelectItem>
-                    <SelectItem value="MongoDB">MongoDB</SelectItem>
-                    <SelectItem value="HTML">HTML</SelectItem>
+                    <SelectItem value="backend development">
+                      backend development
+                    </SelectItem>
+                    <SelectItem value="python full stack">
+                      python full stack
+                    </SelectItem>
+                    <SelectItem value="python">python</SelectItem>
+                    <SelectItem value="javascript">javascript</SelectItem>
+                    <SelectItem value="mongodb">mongodb</SelectItem>
+                    <SelectItem value="machine learning">
+                      machine learning
+                    </SelectItem>
+                    <SelectItem value="next js">next js</SelectItem>
+                    <SelectItem value="docker">docker</SelectItem>
+                    <SelectItem value="html">html</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label>Course Level</Label>
-              <Select
-                defaultValue={input.courseLevel}
-                onValueChange={selectCourseLevel}
-              >
+            <div className="space-y-2">
+              <Label>Course Level *</Label>
+              <Select onValueChange={selectCourseLevel}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a course level" />
+                  <SelectValue placeholder="Select a Course Level" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -221,43 +292,51 @@ const CourseTab = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label>Price in (INR)</Label>
+            <div className="space-y-2">
+              <Label>Price in [INR] *</Label>
               <Input
                 type="number"
                 name="coursePrice"
                 value={input.coursePrice}
                 onChange={changeEventHandler}
-                placeholder="199"
-                className="w-fit"
+                placeholder="₹"
+                className={"w-fit"}
               />
             </div>
           </div>
-          <div>
-            <Label>Course Thumbnail</Label>
+          <div className="space-y-2">
+            <Label>Course Thumbnail *</Label>
             <Input
               type="file"
-              onChange={selectThumbnail}
               accept="image/*"
-              className="w-fit"
+              onChange={selectThumbnail}
+              className={"w-fit cursor-pointer"}
             />
             {previewThumbnail && (
               <img
                 src={previewThumbnail}
-                className="e-64 my-2"
-                alt="Course Thumbnail"
+                className="w-64"
+                alt="courseThumbnail"
               />
             )}
           </div>
-          <div>
-            <Button onClick={() => navigate("/admin/course")} variant="outline">
+          <div className="space-x-2">
+            <Button
+              variant={"outline"}
+              className={"cursor-pointer"}
+              onClick={() => navigate("/admin/course")}
+            >
               Cancel
             </Button>
-            <Button disabled={isLoading} onClick={updateCourseHandler}>
+            <Button
+              className={"cursor-pointer"}
+              disabled={isLoading}
+              onClick={updateCourseHandler}
+            >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Please wait.
                 </>
               ) : (
                 "Save"
@@ -270,4 +349,74 @@ const CourseTab = () => {
   );
 };
 
-export default CourseTab;
+export const CourseFormSkeleton = () => {
+  return (
+    <div>
+      <div className="flex-1">
+        <div className="flex items-center justify-between mb-5">
+          <Skeleton className="h-6 w-[300px] bg-gray-300 dark:bg-gray-200" />
+          <Skeleton className="h-8 w-[140px] bg-gray-300 dark:bg-gray-200" />
+        </div>
+      </div>
+      <Card>
+        <CardHeader className="flex flex-row justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-60 bg-gray-300 dark:bg-gray-200" />
+            <Skeleton className="h-4 w-80 bg-gray-300 dark:bg-gray-200" />
+          </div>
+          <div className="flex space-x-3">
+            <Skeleton className="h-10 w-24 bg-gray-300 dark:bg-gray-200" />
+            <Skeleton className="h-10 w-28 bg-gray-300 dark:bg-gray-200" />
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          <div className="space-y-4 mt-5">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-10 w-full bg-gray-300 dark:bg-gray-200" />
+            </div>
+
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-10 w-full bg-gray-300 dark:bg-gray-200" />
+            </div>
+
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-24 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-40 w-full bg-gray-300 dark:bg-gray-200" />
+            </div>
+
+            <div className="flex items-center gap-5">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-gray-300 dark:bg-gray-200" />
+                <Skeleton className="h-10 w-[180px] bg-gray-300 dark:bg-gray-200" />
+              </div>
+
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-gray-300 dark:bg-gray-200" />
+                <Skeleton className="h-10 w-[180px] bg-gray-300 dark:bg-gray-200" />
+              </div>
+
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-28 bg-gray-300 dark:bg-gray-200" />
+                <Skeleton className="h-10 w-[120px] bg-gray-300 dark:bg-gray-200" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-10 w-64 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-32 w-64 rounded-md bg-gray-300 dark:bg-gray-200" />
+            </div>
+
+            <div className="space-x-2 flex">
+              <Skeleton className="h-10 w-24 bg-gray-300 dark:bg-gray-200" />
+              <Skeleton className="h-10 w-28 bg-gray-300 dark:bg-gray-200" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};

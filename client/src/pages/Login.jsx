@@ -1,4 +1,3 @@
-// McgPr7oX7v1mMcbN
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +9,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useLoginUserMutation,
@@ -20,13 +28,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const Login = () => {
+export const Login = () => {
   const [signupInput, setSignupInput] = useState({
     name: "",
     email: "",
     password: "",
+    role: "",
   });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+
+  const [tabValue, setTabValue] = useState("login");
+
+  const navigate = useNavigate();
 
   const [
     registerUser,
@@ -35,6 +48,7 @@ const Login = () => {
       error: registerError,
       isLoading: registerIsLoading,
       isSuccess: registerIsSuccess,
+      isError: registerIsError,
     },
   ] = useRegisterUserMutation();
   const [
@@ -44,9 +58,9 @@ const Login = () => {
       error: loginError,
       isLoading: loginIsLoading,
       isSuccess: loginIsSuccess,
+      isError: loginIsError,
     },
   ] = useLoginUserMutation();
-  const navigate = useNavigate();
 
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
@@ -57,41 +71,49 @@ const Login = () => {
     }
   };
 
+  const selectRoleHandler = (value, type) => {
+    const values = value;
+    if (type === "signup") {
+      setSignupInput({ ...signupInput, role: values });
+    }
+  };
+
   const handleRegistration = async (type) => {
     const inputData = type === "signup" ? signupInput : loginInput;
     const action = type === "signup" ? registerUser : loginUser;
+
     await action(inputData);
+    setSignupInput("");
   };
 
   useEffect(() => {
-    if(registerIsSuccess && registerData){
-      toast.success(registerData.message || "Signup successful.")
+    if (registerIsSuccess && registerData) {
+      toast.success(registerData?.message || "Signup Successfully.");
+      setTabValue("login");
+    } else if (registerIsError) {
+      toast(registerError?.data?.message || "Signup Failed.");
     }
-    if(registerError){
-      toast.error(registerError.data.message || "Signup Failed");
-    }
-    if(loginIsSuccess && loginData){
-      toast.success(loginData.message || "Login successful.");
+  }, [registerData, registerIsSuccess, registerError, registerIsError]);
+
+  useEffect(() => {
+    if (loginIsSuccess && loginData) {
+      toast.success(loginData?.message || "LoggedIn Successfully.");
       navigate("/");
+    } else if (loginIsError) {
+      toast(loginError?.data?.message || "Login Failed.");
     }
-    if(loginError){ 
-      toast.error(loginError.data.message || "login Failed");
-    }
-  }, [
-    loginIsLoading,
-    registerIsLoading,
-    loginData,
-    registerData,
-    loginError,
-    registerError,
-  ]);
+  }, [loginData, loginIsSuccess, loginIsError, loginError]);
 
   return (
-    <div className="flex items-center w-full justify-center mt-20">
-      <Tabs defaultValue="login" className="w-[400px]">
+    <div className="flex items-center w-full justify-center mt-20 md:p-5 p-5">
+      <Tabs value={tabValue} onValueChange={setTabValue} className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="signup">Signup</TabsTrigger>
-          <TabsTrigger value="login">Login</TabsTrigger>
+          <TabsTrigger value="signup" className={"cursor-pointer"}>
+            Signup
+          </TabsTrigger>
+          <TabsTrigger value="login" className={"cursor-pointer"}>
+            Login
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="signup">
           <Card>
@@ -108,43 +130,61 @@ const Login = () => {
                   type="text"
                   name="name"
                   value={signupInput.name}
+                  placeholder="Eg. abc"
                   onChange={(e) => changeInputHandler(e, "signup")}
-                  placeholder="Eg. patel"
-                  required="true"
+                  required
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="username">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   type="email"
                   name="email"
                   value={signupInput.email}
+                  placeholder="Eg. abc@gmail.com"
                   onChange={(e) => changeInputHandler(e, "signup")}
-                  placeholder="Eg. patel@gmail.com"
-                  required="true"
+                  required
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="username">Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   type="password"
                   name="password"
                   value={signupInput.password}
-                  onChange={(e) => changeInputHandler(e, "signup")}
                   placeholder="Eg. xyz"
-                  required="true"
+                  onChange={(e) => changeInputHandler(e, "signup")}
+                  required
                 />
+              </div>
+              <div className="space-y-1">
+                <Label>Role</Label>
+                <Select
+                  onValueChange={(value) => selectRoleHandler(value, "signup")}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a Role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Role</SelectLabel>
+                      <SelectItem value="student">student</SelectItem>
+                      <SelectItem value="instructor">instructor</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
             <CardFooter>
               <Button
                 disabled={registerIsLoading}
                 onClick={() => handleRegistration("signup")}
+                className="hover:cursor-pointer"
               >
                 {registerIsLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                    wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Please wait..
                   </>
                 ) : (
                   "Signup"
@@ -163,25 +203,25 @@ const Login = () => {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="current">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   type="email"
                   name="email"
                   value={loginInput.email}
+                  placeholder="Eg. abc@gmail.com"
                   onChange={(e) => changeInputHandler(e, "login")}
-                  placeholder="Eg. patel@gmail.com"
-                  required="true"
+                  required
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="new">Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   type="password"
                   name="password"
                   value={loginInput.password}
-                  onChange={(e) => changeInputHandler(e, "login")}
                   placeholder="Eg. xyz"
-                  required="true"
+                  onChange={(e) => changeInputHandler(e, "login")}
+                  required
                 />
               </div>
             </CardContent>
@@ -189,11 +229,12 @@ const Login = () => {
               <Button
                 disabled={loginIsLoading}
                 onClick={() => handleRegistration("login")}
+                className="hover:cursor-pointer"
               >
                 {loginIsLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                    wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Please wait..
                   </>
                 ) : (
                   "Login"
@@ -206,4 +247,3 @@ const Login = () => {
     </div>
   );
 };
-export default Login;

@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import React, { useEffect, useState } from "react";
+
 import {
   Select,
   SelectContent,
@@ -10,17 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateCourseMutation } from "@/features/api/courseApi";
-import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useCreateCourseMutation } from "@/features/api/courseApi";
 import { toast } from "sonner";
 
-const AddCourse = () => {
+export const AddCourse = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [category, setCategory] = useState("");
 
-  const [createCourse, { data, isLoading, error, isSuccess }] =
+  const [createCourse, { data, error, isError, isLoading, isSuccess }] =
     useCreateCourseMutation();
 
   const navigate = useNavigate();
@@ -33,36 +34,40 @@ const AddCourse = () => {
     await createCourse({ courseTitle, category });
   };
 
-  // for displaying toast
-  useEffect(()=>{
-    if(isSuccess){
-        toast.success(data?.message || "Course created.");
-        navigate("/admin/course");
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Course created.");
+      navigate("/admin/course");
     }
-  },[isSuccess, error])
+
+    if (isError) {
+      toast.error(error?.data?.message || "Fail to create course.");
+    }
+  }, [error, isError, isSuccess]);
 
   return (
-    <div className="flex-1 mx-10">
+    <div className="flex-1 mx-10 ">
       <div className="mb-4">
         <h1 className="font-bold text-xl">
-          Lets add course, add some basic course details for your new course
+          Let's add course, add some basic course details for your new course.
         </h1>
         <p className="text-sm">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus,
-          laborum!
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates,
+          eaque.
         </p>
       </div>
       <div className="space-y-4">
-        <div>
+        <div className="space-y-3">
           <Label>Title</Label>
           <Input
             type="text"
             value={courseTitle}
             onChange={(e) => setCourseTitle(e.target.value)}
+            name="courseTitle"
             placeholder="Your Course Name"
           />
         </div>
-        <div>
+        <div className="space-y-3">
           <Label>Category</Label>
           <Select onValueChange={getSelectedCategory}>
             <SelectTrigger className="w-[180px]">
@@ -71,35 +76,52 @@ const AddCourse = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Category</SelectLabel>
-                <SelectItem value="Next JS">Next JS</SelectItem>
-                <SelectItem value="Data Science">Data Science</SelectItem>
-                <SelectItem value="Frontend Development">
-                  Frontend Development
+                <SelectItem value="data science">data science</SelectItem>
+                <SelectItem value="data analyst">data analyst</SelectItem>
+                <SelectItem value="react js">react js</SelectItem>
+                <SelectItem value="mern stack development">
+                  mern stack development
                 </SelectItem>
-                <SelectItem value="Fullstack Development">
-                  Fullstack Development
+                <SelectItem value="java full stack">java full stack</SelectItem>
+                <SelectItem value="frontend development">
+                  frontend development
                 </SelectItem>
-                <SelectItem value="MERN Stack Development">
-                  MERN Stack Development
+                <SelectItem value="backend development">
+                  backend development
                 </SelectItem>
-                <SelectItem value="Javascript">Javascript</SelectItem>
-                <SelectItem value="Python">Python</SelectItem>
-                <SelectItem value="Docker">Docker</SelectItem>
-                <SelectItem value="MongoDB">MongoDB</SelectItem>
-                <SelectItem value="HTML">HTML</SelectItem>
+                <SelectItem value="python full stack">
+                  python full stack
+                </SelectItem>
+                <SelectItem value="python">python</SelectItem>
+                <SelectItem value="javascript">javascript</SelectItem>
+                <SelectItem value="mongodb">mongodb</SelectItem>
+                <SelectItem value="machine learning">
+                  machine learning
+                </SelectItem>
+                <SelectItem value="next js">next js</SelectItem>
+                <SelectItem value="docker">docker</SelectItem>
+                <SelectItem value="html">html</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => navigate("/admin/course")}>
+        <div className="flex items-center gap-3 ">
+          <Button
+            className={"cursor-pointer"}
+            variant={"outline"}
+            onClick={() => navigate("/admin/course")}
+          >
             Back
           </Button>
-          <Button disabled={isLoading} onClick={createCourseHandler}>
+          <Button
+            disabled={isLoading}
+            onClick={createCourseHandler}
+            className={"cursor-pointer"}
+          >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Please wait..
               </>
             ) : (
               "Create"
@@ -110,5 +132,3 @@ const AddCourse = () => {
     </div>
   );
 };
-
-export default AddCourse;
