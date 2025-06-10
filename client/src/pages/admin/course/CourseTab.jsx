@@ -293,13 +293,13 @@ export const CourseTab = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Price in [INR] *</Label>
+              <Label>Price in [USD] *</Label>
               <Input
                 type="number"
                 name="coursePrice"
                 value={input.coursePrice}
                 onChange={changeEventHandler}
-                placeholder="₹"
+                placeholder=" $"
                 className={"w-fit"}
               />
             </div>

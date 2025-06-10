@@ -116,7 +116,7 @@ export const CourseDetail = () => {
               <h1>{course?.lectures[0]?.lectureTitle}</h1>
               <Separator className="my-2" />
               <h1 className="text-lg md:text-xl font-semibold">
-                ₹{course?.coursePrice}
+                ${course?.coursePrice}
               </h1>
             </CardContent>
             <CardFooter className="flex justify-center ">
