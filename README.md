@@ -1,142 +1,436 @@
-# 🎓 LMS - Full-Stack Learning Management System
+# Skill-Hive (Learning Management System)
 
- <!-- Replace with a link to your own project banner -->
+<div align="center">
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
-  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-</p>
+<img src="https://raw.githubusercontent.com/yourusername/LMS/main/client/public/vite.svg" alt="LMS Logo" width="120" height="120" style="border-radius: 15px;">
 
-## 📖 Overview
+### 🚀 **A Full-Stack MERN Learning Management Platform**
 
-This is a feature-rich, full-stack Learning Management System (LMS) built from the ground up using the MERN stack (MongoDB, Express.js, React, Node.js)[2]. The platform is designed to provide a seamless online learning experience, allowing students to browse, purchase, and track their progress in various courses, while instructors can create, manage, and publish their own content[2].
+_Connecting learners and educators through seamless technology_
 
-This project demonstrates a complete end-to-end development cycle, from backend API creation to a dynamic, responsive frontend user interface[6]. It was developed to solidify full-stack development skills and serve as a comprehensive portfolio piece[2][7].
+</div>
+
+---
+
+## 📋 Table of Contents
+
+<details>
+<summary>Click to expand navigation</summary>
+
+- [🎯 About The Project](#-about-the-project)
+- [✨ Key Features](#-key-features)
+- [🛠️ Built With](#️-built-with)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🚀 Quick Start](#-quick-start)
+- [📱 User Experience](#-user-experience)
+- [⚡ Admin Dashboard](#-admin-dashboard)
+- [🔌 API Reference](#-api-reference)
+- [📱 Responsive Design](#-responsive-design)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👨‍💻 Author](#-author)
+- [🙏 Acknowledgments](#-acknowledgments)
+
+</details>
+
+---
+
+## 🎯 About The Project
+
+<br>
+
+**LMS** is a full-stack learning management system built using the MERN stack (MongoDB, Express.js, React, Node.js). The platform connects students and instructors, enabling seamless course creation, purchase, and progress tracking.
+
+### 🏗️ **Three-Component Architecture**
+
+| Component              | Purpose                                             | Technology Stack            |
+| ---------------------- | --------------------------------------------------- | --------------------------- |
+| 🎨 **User Frontend**   | Student-facing interface for browsing and learning  | React + Vite                |
+| 👨‍💼 **Admin Dashboard** | Course and lecture management for admins            | React                       |
+| 🔧 **Backend API**     | Business logic, authentication, and data management | Node.js + Express + MongoDB |
+
+---
 
 ## ✨ Key Features
 
-This application includes a wide array of features for different user roles[2]:
+<div align="center">
 
-**👨‍🎓 For Students:**
-*   **Authentication**: Secure user registration and login functionality.
-*   **Course Discovery**: Browse, search, and filter through a catalog of available courses.
-*   **Course Details**: View detailed information for each course, including content, instructor, and price.
-*   **Payment Integration**: Securely purchase courses using Stripe integration.
-*   **My Learning Dashboard**: Access all purchased courses and track learning progress.
-*   **Course Progression**: Watch lectures, and mark them as complete/incomplete.
-*   **Protected Routes**: Non-purchased course content is locked and inaccessible.
-*   **User Profile**: View and update personal profile information and avatar.
+### 🧑‍🎓 **Student Portal Features**
 
-**👨‍🏫 For Instructors/Admins:**
-*   **Admin Dashboard**: A comprehensive dashboard showing total revenue and enrollment analytics with graphical representation.
-*   **Course Management**: Create, edit, and delete courses.
-*   **Content Uploads**: Add, update, and remove video lectures for each course, with media files hosted on Cloudinary.
-*   **Publishing Control**: Publish or un-publish courses, making them live or keeping them as drafts. Draft courses are not visible to students.
-*   **Role-Based Access**: Distinct functionalities and views for instructor and student roles.
+</div>
 
-**💻 Technical Features:**
-*   **State Management**: Efficient and predictable state management using Redux Toolkit (RTK Query) for API data caching[2][7].
-*   **Responsive Design**: A fully responsive UI that works seamlessly on desktop and mobile devices.
-*   **UI/UX**: Modern and user-friendly interface with features like loading skeletons (shimmer UI) and a light/dark mode toggle[2].
-*   **Rich Text Editor**: A rich text editor for creating detailed course descriptions.
+<table>
+<tr>
+<td width="50%">
 
-## 📸 Screenshots
+**🔐 Authentication System**
 
-<!-- IMPORTANT: Add screenshots of your application here. Visuals are critical for a portfolio project. -->
-**Landing Page (Dark Mode)**
+- User registration and login
+- Secure session management
+
+**📚 Course Catalog**
+
+- Browse all available courses
+- View course details, curriculum, and instructor info
+- Search and filter courses
+
+</td>
+<td width="50%">
+
+**💳 Course Purchase**
+
+- Purchase courses securely
+- Access purchased content
+
+**📈 Progress Tracking**
+
+- Track course and lecture completion
+- Resume learning where you left off
+
+</td>
+</tr>
+</table>
+
+**💬 Communication**
+
+- Protected routes for enrolled students
+- Profile management
+
+<div align="center">
+
+### 👨‍💼 **Admin Dashboard Features**
+
+</div>
+
+<table>
+<tr>
+<td width="50%">
+
+**📖 Course Management**
+
+- Add new courses with images and descriptions
+- Edit existing courses
+- Delete courses
+- List all courses
+
+**🎬 Lecture Management**
+
+- Add, edit, and delete lectures for each course
+- Rich text editor for lecture content
+
+</td>
+<td width="50%">
+
+**🧑‍🎓 Student Management**
+
+- View enrolled students
+- Access student progress
+
+**🔧 Platform Management**
+
+- Clean, intuitive interface
+- Efficient workflow for course and lecture management
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🛠️ Built With
+
+<div align="center">
+
+### 🎨 **Frontend Technologies**
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+### ⚙️ **Backend Technologies**
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+
+### 🚀 **Services & Tools**
+
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+
+</div>
+
+---
+
+## 🏗️ System Architecture
+
+### 📁 **Project Structure**
 
 
-**Course Dashboard (Light Mode)**
+---
 
+## 🚀 Quick Start
 
-**Course Progress Page**
+### 📋 **Prerequisites**
 
+```bash
+Node.js (v16 or newer)
+npm or yarn
+MongoDB
+Git
+```
 
-## 🛠️ Tech Stack & Tools
+### 🛠️ **Installation Steps**
 
-The project leverages a modern tech stack for building robust and scalable web applications[1][2]:
+#### 1️⃣ **Clone the Repository**
 
-| Category      | Technology                                                                                                  |
-|---------------|-------------------------------------------------------------------------------------------------------------|
-| **Frontend**  | React.js, Redux Toolkit, React Router DOM, Tailwind CSS, Shadcn UI                                          |
-| **Backend**   | Node.js, Express.js                                                                                         |
-| **Database**  | MongoDB                                                                                                     |
-| **APIs**      | RESTful API                                                                                                 |
-| **DevOps**    | Cloudinary (for Media Storage), Stripe (for Payments)                                                       |
-| **Languages** | JavaScript, CSS, HTML                                                                                       |
+```bash
+git clone https://github.com/yourusername/LMS.git
+cd LMS
+```
 
-## ⚙️ Project Architecture
+#### 2️⃣ **Backend Setup**
 
-The application follows a standard client-server architecture, with the frontend and backend decoupled for better maintainability and scalability[1].
+```bash
+cd server
+npm install
+# Configure your environment variables in a .env file (see below)
+npm start
+```
 
+#### 3️⃣ **Frontend Setup**
 
+```bash
+cd ../client
+npm install
+npm run dev
+```
 
-## 🚀 Local Development Setup
+### 🎉 **Access Your Application**
 
-To get a local copy up and running, please follow these simple steps.
+| Service                | Local URL               | Description           |
+| ---------------------- | ----------------------- | --------------------- |
+| 🎨 **User Frontend**   | `http://localhost:5173` | Student interface     |
+| 🔧 **Backend API**     | `http://localhost:5000` | RESTful API server    |
 
-### Prerequisites
-*   Node.js (v18 or higher)
-*   npm or yarn
-*   MongoDB (local instance or a cloud service like MongoDB Atlas)
+---
 
-### Installation
+## ⚙️ Environment Variables
 
-1.  **Clone the repository:**
-    ```
-    git clone https://github.com/jeel8003/LMS.git
-    cd LMS
-    ```
+Create a `.env` file in the `server/` directory with the following:
 
-2.  **Set up the Backend:**
-    ```
-    cd server
-    npm install
-    ```
-    Create a `.env` file in the `server` directory and add the following environment variables. Use the `.env.example` as a guide.
-    ```
-    PORT=5000
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret
-    STRIPE_API_KEY=your_stripe_api_key
-    STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-    CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-    CLOUDINARY_API_KEY=your_cloudinary_api_key
-    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-    ```
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
 
-3.  **Set up the Frontend:**
-    ```
-    cd ../client
-    npm install
-    ```
-    Create a `.env` file in the `client` directory and add the backend server URL:
-    ```
-    VITE_SERVER_URL=http://localhost:5000
-    ```
+---
 
-### Usage
+## 📱 User Experience
 
-1.  **Start the Backend Server:**
-    Navigate to the `server` directory and run:
-    ```
-    npm start
-    ```
+### 🏠 **User Journey**
 
-2.  **Start the Frontend Development Server:**
-    In a new terminal, navigate to the `client` directory and run:
-    ```
-    npm run dev
-    ```
+<table>
+<tr>
+<td width="25%">
 
-Open your browser and go to `http://localhost:5173` to see the application live.
+**🎯 Homepage**
+
+- Course categories display
+- Featured courses
+
+</td>
+<td width="25%">
+
+**📚 Course Browsing**
+
+- Filter by category
+- View course details
+- Enroll in courses
+
+</td>
+<td width="25%">
+
+**🛒 Course Purchase**
+
+- Secure checkout
+- Access purchased courses
+
+</td>
+<td width="25%">
+
+**📈 Progress Tracking**
+
+- Track completed lectures
+- Resume learning
+
+</td>
+</tr>
+</table>
+
+---
+
+## ⚡ Admin Dashboard
+
+### 🎛️ **Admin Capabilities**
+
+<table>
+<tr>
+<td width="33%">
+
+**📖 Course Management**
+
+- Add, edit, delete courses
+- Upload course images
+
+</td>
+<td width="33%">
+
+**🎬 Lecture Management**
+
+- Add, edit, delete lectures
+- Rich text content
+
+</td>
+<td width="33%">
+
+**🧑‍🎓 Student Management**
+
+- View enrolled students
+- Track student progress
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🔌 API Reference
+
+### 🛡️ **Authentication Endpoints**
+
+| Method | Endpoint               | Description           |
+| ------ | ---------------------- | --------------------- |
+| `POST` | `/api/auth/register`   | Register new user     |
+| `POST` | `/api/auth/login`      | User login            |
+
+### 📚 **Course Endpoints**
+
+| Method | Endpoint         | Description                |
+| ------ | ----------------| -------------------------- |
+| `GET`  | `/api/courses`  | Get all courses            |
+| `GET`  | `/api/courses/:id` | Get course details      |
+| `POST` | `/api/courses`  | Add new course (admin)     |
+| `PUT`  | `/api/courses/:id` | Edit course (admin)     |
+| `DELETE`| `/api/courses/:id`| Delete course (admin)   |
+
+### 🎬 **Lecture Endpoints**
+
+| Method | Endpoint         | Description                |
+| ------ | ----------------| -------------------------- |
+| `POST` | `/api/lectures` | Add lecture (admin)        |
+| `PUT`  | `/api/lectures/:id` | Edit lecture (admin)   |
+| `DELETE`| `/api/lectures/:id`| Delete lecture (admin) |
+
+### 🛒 **Purchase Endpoints**
+
+| Method | Endpoint         | Description           |
+| ------ | ----------------| --------------------- |
+| `POST` | `/api/purchase` | Purchase a course     |
+| `GET`  | `/api/purchase` | Get user's purchases  |
+
+### 📈 **Progress Endpoints**
+
+| Method | Endpoint         | Description                     |
+| ------ | ----------------| ------------------------------- |
+| `GET`  | `/api/progress/:courseId` | Get course progress   |
+| `POST` | `/api/progress/:courseId/lecture/:lectureId` | Mark lecture as completed |
+
+### 👤 **User Endpoints**
+
+| Method | Endpoint         | Description         |
+| ------ | ----------------| ------------------- |
+| `GET`  | `/api/user/profile` | Get user profile |
+| `PUT`  | `/api/user/profile` | Update profile   |
+
+---
+
+## 📱 Responsive Design
+
+- Flexible grid layouts
+- Touch-friendly controls
+- Responsive images
+- Collapsible navigation menu
+- Media queries for all breakpoints
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ **Completed Features**
+
+- [x] User authentication
+- [x] Course catalog and details
+- [x] Course purchase and access
+- [x] Progress tracking
+- [x] Admin dashboard for course/lecture management
+- [x] Responsive design
+- [x] Profile management
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. **Fork the Project**
+2. **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to the Branch** (`git push origin feature/AmazingFeature`)
+5. **Open a Pull Request**
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
+---
 
+## 👨‍💻 Author
 
+<div align="center">
+
+**Your Name**
+
+[![GitHub](https://img.shields.io/badge/GitHub-yourusername-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
+[![Project](https://img.shields.io/badge/Project-LMS-FF6B6B?style=for-the-badge&logo=github)](https://github.com/yourusername/LMS)
+
+</div>
+
+---
+
+## 🙏 Acknowledgments
+
+- **[React](https://react.dev/)**
+- **[Redux Toolkit](https://redux-toolkit.js.org/)**
+- **[Vite](https://vitejs.dev/)**
+- **[Node.js](https://nodejs.org/)**
+- **[Express](https://expressjs.com/)**
+- **[MongoDB](https://www.mongodb.com/)**
+- **[Cloudinary](https://cloudinary.com/)**
+
+---
+
+<div align="center">
+
+### ⭐ **Star this repository if you found it helpful!**
+
+**Made with ❤️ by [Jeel Boghra](https://github.com/jeel8003)**
+
+</div>
