@@ -408,8 +408,8 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 **Your Name**
 
-[![GitHub](https://img.shields.io/badge/GitHub-yourusername-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
-[![Project](https://img.shields.io/badge/Project-LMS-FF6B6B?style=for-the-badge&logo=github)](https://github.com/yourusername/LMS)
+[![GitHub](https://img.shields.io/badge/GitHub-yourusername-181717?style=for-the-badge&logo=github)](https://github.com/jeel8003)
+[![Project](https://img.shields.io/badge/Project-LMS-FF6B6B?style=for-the-badge&logo=github)](https://github.com/jeel8003/Skill-Hive)
 
 </div>
 
