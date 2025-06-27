@@ -35,7 +35,7 @@ export const CourseDetail = () => {
       
       if (sessionId) {
         try {
-          const response = await fetch('http://localhost:3000/api/v1/purchase/confirm-enrollment', {
+          const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/purchase/confirm-enrollment`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

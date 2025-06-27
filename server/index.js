@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 // Fix the CORS configuration
 app.use(cors({
-    origin: "http://localhost:5173", // Replace with the exact origin of your client
+    origin: `${process.env.CLIENT_URL}`, // Replace with the exact origin of your client
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']

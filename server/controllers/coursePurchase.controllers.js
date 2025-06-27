@@ -34,8 +34,8 @@ export const createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/course-detail/${courseId}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/course-detail/${courseId}`,
+      success_url: `${process.env.CLIENT_URL}/course-detail/${courseId}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/course-detail/${courseId}`,
       metadata: {
         courseId,
         userId,
