@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_51R8kTSHGesUUJ195vE2sYoI567ECaaTKRQl36a3ns7fScu0jCQ3VCrSqnGUNHM7VhpINNrlrUr8jyklyrP7kUpv700Y7lmKR8O"); // Your publishable key
+const stripePromise = loadStripe("pk_test_51RY2mU4ZWuCc6xC5L5naZiW5CsbZdPD1qZCqZWPhxWdN9YlypA1ci2oaSMO1cUsE9ogl3FGqcDH738KQcu9zIgbg00CubVmVHl"); // Your publishable key
 
 export const BuyCourseButton = ({ courseId }) => {
   const [
@@ -54,6 +54,7 @@ export const BuyCourseButton = ({ courseId }) => {
       ) : (
         "Purchase Course"
       )}
+      
     </Button>
   );
 };
