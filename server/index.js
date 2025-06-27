@@ -17,7 +17,13 @@ app.use(cookieParser());
 
 // Fix the CORS configuration
 app.use(cors({
-    origin: 'https://skill-hive-c4b4-rbb7prd3j-jeels-projects-fe0f55c7.vercel.app', // Replace with the exact origin of your client
+    origin: [
+        'https://skill-hive-c4b4.vercel.app',
+        'https://skill-hive-c4b4-nz1do28o-jeels-projects-fe0f55c7.vercel.app',
+        /^https:\/\/skill-hive-c4b4-.*\.vercel\.app$/,
+        
+        'http://localhost:5173'
+    ],// Replace with the exact origin of your client
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
