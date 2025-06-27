@@ -22,13 +22,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use((req, res, next) => {
-    if (req.originalUrl === "/api/v1/purchase/webhook") {
-      express.raw({ type: "application/json" })(req, res, next); // for Stripe
-    } else {
-      express.json()(req, res, next); // normal JSON parsing
-    }
-  });
 // APIs
 const PORT = process.env.PORT;
 app.use("/api/v1/user", userRoute);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { Button } from "./components/ui/button";
 import { Login } from "./pages/Login";
-import Navbar  from "./components/Navbar";
+import Navbar from "./components/Navbar";
 import { HeroSection } from "./pages/student/HeroSection";
 import { createBrowserRouter } from "react-router-dom";
 import { MainLayout } from "./layout/MainLayout";
@@ -25,8 +25,10 @@ import {
   AuthenticatedUser,
   ProtectedRoute,
 } from "./components/ProtectedRoutes";
-import  PurchaseCourseProtectedRoute  from "./components/PurchaseCourseProtectedRoute";
+import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { SuccessPage } from "./pages/student/SuccessPage";
+import { CancelPage } from "./pages/student/CancelPage";
 
 const appRouter = createBrowserRouter([
   {
@@ -74,7 +76,6 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-
       {
         path: "course-detail/:courseId",
         element: (
@@ -82,6 +83,22 @@ const appRouter = createBrowserRouter([
             <CourseDetail />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "success",
+        element:(
+          <ProtectedRoute>
+            <SuccessPage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "cancel",
+        element:(
+          <ProtectedRoute>
+            <CancelPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: "course-progress/:courseId",
@@ -138,7 +155,7 @@ function App() {
   return (
     <main>
       <ThemeProvider>
-      <RouterProvider router={appRouter} />
+        <RouterProvider router={appRouter} />
       </ThemeProvider>
     </main>
   );

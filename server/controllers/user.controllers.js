@@ -148,7 +148,6 @@ export const updateProfile = async (req, res) => {
             })
         }
 
-        // extract public id of the old image form the url is it exits.
         if (user.photoUrl) {
             const publicId = user.photoUrl.split("/").pop().split(".")[0] //extract public id
             deleteMediaFromCloudinary(publicId);

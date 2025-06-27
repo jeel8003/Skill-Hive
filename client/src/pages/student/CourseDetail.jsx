@@ -14,12 +14,11 @@ import { useGetCourseWithStatusQuery } from "@/features/api/purchaseApi";
 import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
 import React, { useEffect } from "react";
 import ReactPlayer from "react-player";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation,useNavigate, useParams } from "react-router-dom";
 
 export const CourseDetail = () => {
   const params = useParams();
   const courseId = params.courseId;
-
   const navigate = useNavigate();
 
   const { data, isLoading, isError, refetch } =
@@ -27,9 +26,43 @@ export const CourseDetail = () => {
     
   const { course, purchased } = data || {};
 
-  useEffect(() => {
-    refetch();
-  }, [data]);
+ const location = useLocation();
+
+ useEffect(() => {
+    const confirmPayment = async () => {
+      const urlParams = new URLSearchParams(location.search);
+      const sessionId = urlParams.get('session_id');
+      
+      if (sessionId) {
+        try {
+          const response = await fetch('http://localhost:3000/api/v1/purchase/confirm-enrollment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ sessionId })
+          });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            toast.success("Payment successful! You are now enrolled.");
+            refetch(); // Refresh course data
+            // Clean URL
+            window.history.replaceState({}, document.title, `/course-detail/${courseId}`);
+          } else {
+            toast.error(result.message || "Payment confirmation failed.");
+          }
+        } catch (error) {
+          console.error('Confirmation error:', error);
+          toast.error("Failed to confirm payment.");
+        }
+      }
+    };
+
+    confirmPayment();
+  }, [location, refetch, courseId]);
 
   if (isLoading) return <CourseDetailSkeleton course={course} />;
 

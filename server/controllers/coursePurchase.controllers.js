@@ -1,220 +1,9 @@
-// import Stripe from "stripe";
-// import { Course } from "../models/course.model.js";
-// import { CoursePurchase } from "../models/coursePurchase.model.js";
-// import { Lecture } from "../models/lecture.model.js";
-// import { User } from "../models/user.model.js";
-
-// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-// export const createCheckoutSession = async (req, res) => {
-//   try {
-//     const userId = req.id;
-//     const { courseId } = req.body;
-
-//     const course = await Course.findById(courseId);
-//     if (!course) {
-//       res.status(404).json({
-//         success: false,
-//         message: 'Course not found.'
-//       })
-//     }
-
-//     // create a new course purchase record
-//     const newPurchase = new CoursePurchase({
-//       courseId,
-//       userId,
-//       amount: course.coursePrice,
-//       status: "pending"
-//     })
-
-//     // create a stripe checkout session
-
-//     const session = await stripe.checkout.sessions.create({
-//       payment_method_types: ["card"],
-//       line_items: [
-//         {
-//           price_data: {
-//             currency: "inr",
-//             product_data: {
-//               name: course.courseTitle,
-//               images: [course.courseThumbnail],
-//             },
-//             unit_amount: course.coursePrice * 100, // Amount in paise (lowest denomination)
-//           },
-//           quantity: 1,
-//         },
-//       ],
-//       mode: "payment",
-//       success_url: `https://lms-xwnv.onrender.com/course-progress/${courseId}`, // once payment successful redirect to course progress page
-//       cancel_url: `https://lms-xwnv.onrender.com/course-detail/${courseId}`,
-//       metadata: {
-//         courseId: courseId,
-//         userId: userId,
-//       },
-//       shipping_address_collection: {
-//         allowed_countries: ["IN"], // Optionally restrict allowed countries
-//       },
-//     });
-
-//     if (!session.url) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Error while creating session" });
-//     }
-
-//     // Save the purchase record
-//     newPurchase.paymentId = session.id;
-//     await newPurchase.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       url: session.url, // Return the Stripe checkout URL
-//     });
-
-
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({
-//       success: false,
-//       message: error || "Fail to create checkOut session."
-//     })
-//   }
-// }
-
-// export const stripeWebhook = async (req, res) => {
-//   const sig = req.headers['stripe-signature'];
-//   let event;
-//   try {
-//     // for local environment =>
-
-//     // const payloadString = JSON.stringify(req.body, null, 2);
-//     //   const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
-
-//     //   const header = stripe.webhooks.generateTestHeaderString({
-//     //     payload: payloadString,
-//     //     secret,
-//     //   });
-
-//     event = stripe.webhooks.constructEvent(req.body, sig, process.env.WEBHOOK_ENDPOINT_SECRET);
-//   } catch (error) {
-//     console.error("Webhook error:", error.message);
-//     return res.status(400).send(`Webhook error: ${error.message}`);
-//   }
-
-//   // Handle the checkout session completed event
-//   if (event.type === "checkout.session.completed") {
-//     try {
-//       const session = event.data.object;
-
-//       const purchase = await CoursePurchase.findOne({
-//         paymentId: session.id,
-//       }).populate({ path: "courseId" });
-
-//       if (!purchase) {
-//         return res.status(404).json({ message: "Purchase not found" });
-//       }
-
-//       if (session.amount_total) {
-//         purchase.amount = session.amount_total / 100;
-//       }
-//       purchase.status = "completed";
-
-//       // Make all lectures visible by setting `isPreviewFree` to true
-//       if (purchase.courseId && purchase.courseId.lectures.length > 0) {
-//         await Lecture.updateMany(
-//           { _id: { $in: purchase.courseId.lectures } },
-//           { $set: { isPreviewFree: true } }
-//         );
-//       }
-
-//       await purchase.save();
-
-//       // Update user's enrolledCourses
-//       await User.findByIdAndUpdate(
-//         purchase.userId,
-//         { $addToSet: { enrolledCourses: purchase.courseId._id } }, // Add course ID to enrolledCourses
-//         { new: true }
-//       );
-
-//       // Update course to add user ID to enrolledStudents
-//       await Course.findByIdAndUpdate(
-//         purchase.courseId._id,
-//         { $addToSet: { enrolledStudents: purchase.userId } }, // Add user ID to enrolledStudents
-//         { new: true }
-//       );
-//     } catch (error) {
-//       console.error("Error handling event:", error);
-//       return res.status(500).json({ message: "Internal Server Error" });
-//     }
-//   }
-//   res.status(200).send();
-// };
-
-// export const getCourseDetailWithPurchaseStatus = async (req, res) => {
-//   try {
-//     const { courseId } = req.params;
-//     const userId = req.id;
-
-//     const course = await Course.findById(courseId).populate({ path: "creator" }).populate({ path: "lectures" });
-
-//     const purchased = await CoursePurchase.findOne({ userId, courseId, status: "completed" });
-
-//     if (!course) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Course not found."
-//       })
-//     }
-
-//     return res.status(200).json({
-//       course,
-//       purchased: !!purchased
-//     })
-
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error"
-//     });
-//   }
-// }
-
-// export const getAllPurchasedCourse = async (req, res) => {
-//   try {
-//     const userId = req.id;
-//     const purchasedCourses = await CoursePurchase.find({ status: "completed" }).populate("courseId");
-
-//     if (!purchasedCourses) {
-//       return res.status(404).json({
-//         success: false,
-//         purchasedCourses: []
-//       })
-//     }
-
-//     const createdByUser = purchasedCourses.filter(
-//       (purchase) => purchase.courseId?.creator?.toString() === userId.toString()
-//     );
-
-//     return res.status(200).json({
-//       success: true,
-//       purchasedCourses: createdByUser
-//     })
-
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error"
-//     });
-//   }
-// }
 import Stripe from "stripe";
 import { Course } from "../models/course.model.js";
 import { CoursePurchase } from "../models/coursePurchase.model.js";
-import { Lecture } from "../models/lecture.model.js";
 import { User } from "../models/user.model.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Ensure this key supports USD
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCheckoutSession = async (req, res) => {
   try {
@@ -229,54 +18,40 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
-    const newPurchase = new CoursePurchase({
-      courseId,
-      userId,
-      amount: course.coursePrice,
-      status: "pending"
-    });
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
-            currency: "usd", // 💵 Use USD instead of INR
+            currency: "usd",
             product_data: {
               name: course.courseTitle,
               images: [course.courseThumbnail],
             },
-            unit_amount: course.coursePrice * 100, // Stripe expects amount in cents
+            unit_amount: course.coursePrice * 100,
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/course-progress/${courseId}`,
+      success_url: `http://localhost:5173/course-detail/${courseId}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:5173/course-detail/${courseId}`,
       metadata: {
         courseId,
         userId,
-      },
-      shipping_address_collection: {
-        allowed_countries: ["US"], // Adjust this as needed
-      },
+      }
     });
 
-    if (!session.url) {
-      return res.status(400).json({
-        success: false,
-        message: "Error while creating session"
-      });
-    }
-
-    newPurchase.paymentId = session.id;
-    await newPurchase.save();
-
-    return res.status(200).json({
-      success: true,
-      url: session.url
+    // Create pending purchase record
+    await CoursePurchase.create({
+      courseId,
+      userId,
+      amount: course.coursePrice,
+      status: "pending",
+      paymentId: session.id
     });
+
+    return res.json({ id: session.id });
 
   } catch (error) {
     console.error(error);
@@ -287,60 +62,62 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-export const stripeWebhook = async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
+export const confirmEnrollment = async (req, res) => {
   try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.WEBHOOK_ENDPOINT_SECRET
-    );
-  } catch (error) {
-    console.error("Webhook error:", error.message);
-    return res.status(400).send(`Webhook error: ${error.message}`);
-  }
+    const { sessionId } = req.body;
+    const userId = req.id;
 
-  if (event.type === "checkout.session.completed") {
-    try {
-      const session = event.data.object;
+    // Retrieve session from Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    if (session.payment_status === "paid") {
+      // Find and update purchase
       const purchase = await CoursePurchase.findOne({
-        paymentId: session.id,
-      }).populate({ path: "courseId" });
+        paymentId: sessionId,
+        userId
+      }).populate("courseId");
 
       if (!purchase) {
-        return res.status(404).json({ message: "Purchase not found" });
+        return res.status(404).json({
+          success: false,
+          message: "Purchase not found"
+        });
       }
 
-      purchase.amount = session.amount_total / 100;
+      // Update purchase status
       purchase.status = "completed";
-
-      if (purchase.courseId?.lectures?.length > 0) {
-        await Lecture.updateMany(
-          { _id: { $in: purchase.courseId.lectures } },
-          { $set: { isPreviewFree: true } }
-        );
-      }
-
+      purchase.amount = session.amount_total / 100;
       await purchase.save();
 
+      // Enroll user in course
       await User.findByIdAndUpdate(
-        purchase.userId,
+        userId,
         { $addToSet: { enrolledCourses: purchase.courseId._id } }
       );
 
       await Course.findByIdAndUpdate(
         purchase.courseId._id,
-        { $addToSet: { enrolledStudents: purchase.userId } }
+        { $addToSet: { enrolledStudents: userId } }
       );
-    } catch (error) {
-      console.error("Error handling event:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
 
-  res.status(200).send();
+      return res.json({
+        success: true,
+        message: "Enrollment confirmed"
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Payment not completed"
+      });
+    }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
+  }
 };
 
 export const getCourseDetailWithPurchaseStatus = async (req, res) => {
@@ -366,6 +143,7 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
     });
 
     return res.status(200).json({
+      success: true,
       course,
       purchased: !!purchased
     });
@@ -383,24 +161,15 @@ export const getAllPurchasedCourse = async (req, res) => {
   try {
     const userId = req.id;
 
+    // Find courses purchased by this user
     const purchasedCourses = await CoursePurchase.find({
+      userId,
       status: "completed"
     }).populate("courseId");
 
-    if (!purchasedCourses) {
-      return res.status(404).json({
-        success: false,
-        purchasedCourses: []
-      });
-    }
-
-    const createdByUser = purchasedCourses.filter(
-      (purchase) => purchase.courseId?.creator?.toString() === userId.toString()
-    );
-
     return res.status(200).json({
       success: true,
-      purchasedCourses: createdByUser
+      purchasedCourses
     });
 
   } catch (error) {
