@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_51RY2mU4ZWuCc6xC5L5naZiW5CsbZdPD1qZCqZWPhxWdN9YlypA1ci2oaSMO1cUsE9ogl3FGqcDH738KQcu9zIgbg00CubVmVHl"); // Your publishable key
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY); // Your publishable key
 
 export const BuyCourseButton = ({ courseId }) => {
   const [
