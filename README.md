@@ -196,7 +196,7 @@ cd LMS
 cd server
 npm install
 # Configure your environment variables in a .env file (see below)
-npm start
+npm run dev
 ```
 
 #### 3️⃣ **Frontend Setup**
@@ -383,6 +383,24 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 - [x] Profile management
 
 ---
+## 🤝 ScreenShots
+![WhatsApp Image 2025-07-17 at 22 42 01_301dfb4e](https://github.com/user-attachments/assets/2b842257-f17a-4dec-9526-7c9ea1a44a82)
+![WhatsApp Image 2025-07-17 at 22 56 12_49e4ac55](https://github.com/user-attachments/assets/7109b4cb-4a05-4fef-9933-58de47786dc6)
+![WhatsApp Image 2025-07-17 at 22 46 51_46f6356b](https://github.com/user-attachments/assets/05a07eac-09cd-43a9-9507-4cccef563a19)
+![WhatsApp Image 2025-07-17 at 22 45 04_4fc4ac7f](https://github.com/user-attachments/assets/f72c6100-259f-44f1-8db4-82ad7a007760)
+![WhatsApp Image 2025-07-17 at 10 16 11_a868a8e4](https://github.com/user-attachments/assets/af2c9c6d-1900-4da5-9f7f-daac4bcf5266)
+![WhatsApp Image 2025-07-17 at 10 16 23_78849a47](https://github.com/user-attachments/assets/5f25eaac-d562-4a04-89c8-d405c5f56b1b)
+![WhatsApp Image 2025-07-17 at 10 17 19_5a000f76](https://github.com/user-attachments/assets/a784c121-0b67-4697-9a45-1af0ee508546)
+![WhatsApp Image 2025-07-17 at 10 18 49_89d47af5](https://github.com/user-attachments/assets/39bb00f9-b463-4fcf-8d01-5f183ad24d89)
+![WhatsApp Image 2025-07-17 at 10 23 24_a644f9bc](https://github.com/user-attachments/assets/b2dba47f-5d42-405a-8934-a860771328d5)
+![WhatsApp Image 2025-07-17 at 10 24 07_88580553](https://github.com/user-attachments/assets/14e67cab-9af6-4409-b638-7a6377c4d62b)
+
+
+
+
+
+
+
 
 ## 🤝 Contributing
 
